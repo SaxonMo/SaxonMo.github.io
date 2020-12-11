@@ -1,0 +1,211 @@
+<!DOCTYPE html><html lang="zh_CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Go之数组与切片 | Saxon 一个向往远方的游者</title><meta name="keywords" content="技术"><meta name="author" content="Saxon"><meta name="copyright" content="Saxon"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><meta name="description" content="Go 入门 数组和切片">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Go之数组与切片">
+<meta property="og:url" content="http://www.saxonmo.com/2020/12/11/Go%E4%B9%8B%E6%95%B0%E7%BB%84%E4%B8%8E%E5%88%87%E7%89%87/index.html">
+<meta property="og:site_name" content="Saxon 一个向往远方的游者">
+<meta property="og:description" content="Go 入门 数组和切片">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://saxon.oss-cn-shenzhen.aliyuncs.com/blog/go.jpg">
+<meta property="article:published_time" content="2020-12-11T08:28:15.000Z">
+<meta property="article:modified_time" content="2020-12-11T08:36:43.135Z">
+<meta property="article:author" content="Saxon">
+<meta property="article:tag" content="技术">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://saxon.oss-cn-shenzhen.aliyuncs.com/blog/go.jpg"><link rel="shortcut icon" href="/img/1.png"><link rel="canonical" href="http://www.saxonmo.com/2020/12/11/Go%E4%B9%8B%E6%95%B0%E7%BB%84%E4%B8%8E%E5%88%87%E7%89%87/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  ClickShowText: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  justifiedGallery: {
+    js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+    css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isanchor: false
+};
+
+var saveToLocal = {
+  set: function setWithExpiry(key, value, ttl) {
+    const now = new Date()
+    const expiryDay = ttl * 86400000
+    const item = {
+      value: value,
+      expiry: now.getTime() + expiryDay,
+    }
+    localStorage.setItem(key, JSON.stringify(item))
+  },
+
+  get: function getWithExpiry(key) {
+    const itemStr = localStorage.getItem(key)
+
+    if (!itemStr) {
+      return undefined
+    }
+    const item = JSON.parse(itemStr)
+    const now = new Date()
+
+    if (now.getTime() > item.expiry) {
+      localStorage.removeItem(key)
+      return undefined
+    }
+    return item.value
+  }
+}</script><script id="config_change">var GLOBAL_CONFIG_SITE = { 
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2020-12-11 16:36:43'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(function () {  window.activateDarkMode = function () {
+    document.documentElement.setAttribute('data-theme', 'dark')
+    if (document.querySelector('meta[name="theme-color"]') !== null) {
+      document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+    }
+  }
+  window.activateLightMode = function () {
+    document.documentElement.setAttribute('data-theme', 'light')
+   if (document.querySelector('meta[name="theme-color"]') !== null) {
+      document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+    }
+  }
+  const autoChangeMode = 'false'
+  const t = saveToLocal.get('theme')
+  if (autoChangeMode === '1') {
+    const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+    const isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+    const isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+    const hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+    if (t === undefined) {
+      if (isLightMode) activateLightMode()
+      else if (isDarkMode) activateDarkMode()
+      else if (isNotSpecified || hasNoSupport) {
+        const now = new Date()
+        const hour = now.getHours()
+        const isNight = hour <= 6 || hour >= 18
+        isNight ? activateDarkMode() : activateLightMode()
+      }
+      window.matchMedia('(prefers-color-scheme: dark)').addListener(function (e) {
+        if (saveToLocal.get('theme') === undefined) {
+          e.matches ? activateDarkMode() : activateLightMode()
+        }
+      })
+    } else if (t === 'light') activateLightMode()
+    else activateDarkMode()
+  } else if (autoChangeMode === '2') {
+    const now = new Date()
+    const hour = now.getHours()
+    const isNight = hour <= 6 || hour >= 18
+    if (t === undefined) isNight ? activateDarkMode() : activateLightMode()
+    else if (t === 'light') activateLightMode()
+    else activateDarkMode()
+  } else {
+    if (t === 'dark') activateDarkMode()
+    else if (t === 'light') activateLightMode()
+  }const asideStatus = saveToLocal.get('aside-status')
+if (asideStatus !== undefined) {
+   if (asideStatus === 'hide') {
+     document.documentElement.classList.add('hide-aside')
+   } else {
+     document.documentElement.classList.remove('hide-aside')
+   }
+}})()</script><meta name="generator" content="Hexo 5.2.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="author-avatar"><img class="avatar-img" src="https://w.wallhaven.cc/full/2e/wallhaven-2eroxm.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">125</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">2</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">14</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 清单</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(https://w.wallhaven.cc/full/2e/wallhaven-2eroxm.jpg)"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">Saxon 一个向往远方的游者</a></span><span id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 清单</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><span class="close" id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></span></span></nav><div id="post-info"><h1 class="post-title">Go之数组与切片</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2020-12-11T08:28:15.000Z" title="发表于 2020-12-11 16:28:15">2020-12-11</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2020-12-11T08:36:43.135Z" title="更新于 2020-12-11 16:36:43">2020-12-11</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Go/">Go</a></span></div><div class="meta-secondline"> <span class="post-meta-separator">|</span><span class="post-meta-pv-cv"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="数组与切片"><a href="#数组与切片" class="headerlink" title="数组与切片"></a>数组与切片</h2><h3 id="数组"><a href="#数组" class="headerlink" title="数组"></a>数组</h3><p>数组的使用和以前基本差不多，就写一些他们之间的不同点</p>
+<h4 id="数组在内存中的布局"><a href="#数组在内存中的布局" class="headerlink" title="数组在内存中的布局"></a>数组在内存中的布局</h4><ul>
+<li>可以使用&amp;数组名获得数组的内存地址，数组的第一个元素的地址，就是数组的首地址</li>
+<li>数组之间的地址间隔根据数组元素的类型来决定，比如int32他们就是4个字节的差距</li>
+</ul>
+<p><strong>四种初始化数组的方法：</strong></p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//原始办法</span></span><br><span class="line">	<span class="keyword">var</span> a [<span class="number">4</span>]<span class="keyword">int</span> = [<span class="number">4</span>]<span class="keyword">int</span>&#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>&#125;</span><br><span class="line">	<span class="keyword">var</span> b = [<span class="number">4</span>]<span class="keyword">int</span>&#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>&#125;</span><br><span class="line">	<span class="comment">//使用[...]</span></span><br><span class="line">	<span class="keyword">var</span> c = [...]<span class="keyword">int</span>&#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>&#125;</span><br><span class="line">	<span class="comment">//使用下标，没有序号的自动给上初始值</span></span><br><span class="line">	<span class="keyword">var</span> d = [...]<span class="keyword">int</span>&#123;<span class="number">1</span>: <span class="number">2</span>, <span class="number">2</span>: <span class="number">4</span>, <span class="number">3</span>: <span class="number">6</span>, <span class="number">4</span>: <span class="number">8</span>&#125;</span><br><span class="line">	<span class="comment">//类型推导</span></span><br><span class="line">	e:=[...]<span class="keyword">int</span>&#123;<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>&#125;</span><br><span class="line">	fmt.Println(a)</span><br><span class="line">	fmt.Println(b)</span><br><span class="line">	fmt.Println(c)</span><br><span class="line">	fmt.Println(d)</span><br><span class="line">	fmt.Println(e)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>结果：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[1 2 3 4]</span><br><span class="line">[1 2 3 4]</span><br><span class="line">[1 2 3 4]</span><br><span class="line">[0 2 4 6 8]</span><br><span class="line">[1 2 3 4 5 6]</span><br></pre></td></tr></table></figure>
+
+<h3 id="切片"><a href="#切片" class="headerlink" title="切片"></a>切片</h3><p>切片就是没有固定容量的数组； <strong>切片是一个很小的对象，它对底层的数组(内部是通过数组保存数据的)进行了抽象，并提供相关的操作方法。切片是一个有三个字段的数据结构，这些数据结构包含 Golang 需要操作底层数组的元数据：</strong></p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">a:=[...]<span class="keyword">int</span>&#123;<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>,<span class="number">7</span>,<span class="number">8</span>,<span class="number">9</span>&#125;</span><br><span class="line">	<span class="comment">//使用数组名 数组名[n:m]，就是获得n-m的数据，包括n不包括m</span></span><br><span class="line">	slice:=a[<span class="number">1</span>:<span class="number">8</span>]</span><br><span class="line">	fmt.Println(slice) <span class="comment">//[2 3]</span></span><br><span class="line">	fmt.Println(<span class="built_in">cap</span>(slice)) <span class="comment">//5</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="https://saxon.oss-cn-shenzhen.aliyuncs.com/blog/image-20201207223043849.png" alt="image-20201207223043849"></p>
+<p>最重要的是切片是一个<strong>引用数据类型</strong>，就是说我们使用 <strong>slice:=a[1:8] 进行的行为是==引用传递==，简单来说，就是我们切片存储的不是值，而是我们的引用数组元素的地址，再由地址指向元素，换句话说，如果数组变了那么切片的数据也会跟着改变</strong></p>
+<p>例子</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">a := [...]<span class="keyword">int</span>&#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>&#125;</span><br><span class="line">	<span class="comment">//使用数组名 数组名[n:m]，就是获得n-m的数据，包括n不包括m</span></span><br><span class="line">	slice := a[:<span class="number">3</span>]</span><br><span class="line">	fmt.Println(slice) <span class="comment">//[1 2 3]</span></span><br><span class="line">	a[<span class="number">0</span>]=<span class="number">111</span></span><br><span class="line">	fmt.Println(slice) <span class="comment">//[111 2 3]</span></span><br><span class="line">	fmt.Println(<span class="built_in">cap</span>(slice)) <span class="comment">//5</span></span><br></pre></td></tr></table></figure>
+
+<p>结果：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[<span class="number">1</span> <span class="number">2</span> <span class="number">3</span>]</span><br><span class="line">[<span class="number">3</span> <span class="number">2</span> <span class="number">3</span>]</span><br><span class="line"><span class="number">9</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>创建切片的3种方式</strong></p>
+<ul>
+<li><p><strong>第一种，使用已有的数组</strong>；</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">a := [...]<span class="keyword">int</span>&#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>&#125;</span><br><span class="line">	<span class="comment">//使用数组名 数组名[n:m]，就是获得n-m的数据，包括n不包括m</span></span><br><span class="line">	slice := a[:<span class="number">3</span>]</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>使用make来获得一个切片</strong></p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">slice:=<span class="built_in">make</span>([]<span class="keyword">int</span>,<span class="number">5</span>,<span class="number">10</span>)</span><br><span class="line">	fmt.Println(slice)</span><br></pre></td></tr></table></figure>
+
+<p>使用make有3个属性</p>
+<ul>
+<li><strong>type:类型， 使用[]类型表示</strong></li>
+<li><strong>len，切片现在的长度，就是初始化里面的元素数量</strong></li>
+<li><strong>cap:切片的容量，可以动态扩充,如果选择了填写cap，那么cap&gt;=len</strong>，<strong>切片对应的底层数组的大小为指定的容量</strong></li>
+<li><strong>如果不对切片赋值，那么所有的都是默认值</strong></li>
+</ul>
+</li>
+<li><p><strong>直接赋值，直接指明数据</strong></p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">slice:=[]<span class="keyword">int</span>&#123;<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>&#125;</span><br><span class="line">	fmt.Println(slice)</span><br><span class="line">	fmt.Println(<span class="built_in">len</span>(slice)) <span class="comment">//3</span></span><br><span class="line">	fmt.Println(<span class="built_in">cap</span>(slice)) <span class="comment">//3</span></span><br></pre></td></tr></table></figure>
+
+<p>如果没有指明容量，那么这个切片的容量和长度一样;我们只可以访问我们在这个长度以内的元素，超出切片长度却又没有超出切片容量的下标，我们是无法访问的，因为 <strong>容量代表着底层数组的大小，但是超出大小的部分对我们不可见</strong></p>
+</li>
+<li><p>一个切片可以以其他切片为主，复制其他的切片</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">slice:=<span class="built_in">make</span>([]<span class="keyword">int</span>,<span class="number">2</span>,<span class="number">10</span>)</span><br><span class="line">slice1:=slice[<span class="number">1</span>:<span class="number">2</span>]<span class="comment">//从第一号开始复制，那么他在底层相对于slice就有了一个偏移量1 因为他是从一开始的</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>需要记住的是，现在两个切片共享同一个底层数组。如果一个切片修改了该底层数组的共享部分，另一个切片也能感知到</strong></li>
+<li><strong>子切片的容量为底层数组的长度减去切片在底层数组的开始偏移量</strong></li>
+</ul>
+<p>基于第一点，可以使用其他切片作为我们的父切片，且他们之间共享同一个底层数组，意思就是可以被感知到数据的变化，但是当我们对其中的子切片扩容超出自己的容量，那么他就会脱离这个群体，自己成一个数组。这个时候，他对自己数据的改变已经对家庭没有影响了</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">slice := <span class="built_in">make</span>([]<span class="keyword">int</span>, <span class="number">2</span>, <span class="number">10</span>)</span><br><span class="line">	fmt.Println(<span class="built_in">cap</span>(slice))</span><br><span class="line">	slice1 := slice[:<span class="number">2</span>]</span><br><span class="line">	fmt.Println(slice1)</span><br><span class="line">	fmt.Println(<span class="built_in">cap</span>(slice1))</span><br><span class="line">	slice2 := <span class="built_in">append</span>(slice1, <span class="number">1</span>)</span><br><span class="line">	fmt.Println(<span class="built_in">cap</span>(slice2))</span><br><span class="line">	slice2 = <span class="built_in">append</span>(slice2, <span class="number">1</span>)</span><br><span class="line">	slice2 = <span class="built_in">append</span>(slice2, <span class="number">1</span>)</span><br><span class="line">	slice2 = <span class="built_in">append</span>(slice2, <span class="number">1</span>)</span><br><span class="line">	slice2 = <span class="built_in">append</span>(slice2, <span class="number">1</span>)</span><br><span class="line">	slice2 = <span class="built_in">append</span>(slice2, <span class="number">1</span>)</span><br><span class="line">	slice2 = <span class="built_in">append</span>(slice2, <span class="number">1</span>)</span><br><span class="line">	slice2 = <span class="built_in">append</span>(slice2, <span class="number">1</span>)</span><br><span class="line">	slice2 = <span class="built_in">append</span>(slice2, <span class="number">1</span>)</span><br><span class="line">	slice2 = <span class="built_in">append</span>(slice2, <span class="number">1</span>)</span><br><span class="line">	slice2 = <span class="built_in">append</span>(slice2, <span class="number">1</span>)</span><br><span class="line">	slice2 = <span class="built_in">append</span>(slice2, <span class="number">1</span>)</span><br><span class="line">	slice2[<span class="number">0</span>] = <span class="number">10001</span></span><br><span class="line">	fmt.Println(slice)</span><br><span class="line">	fmt.Println(slice1) </span><br><span class="line">	fmt.Println(<span class="built_in">cap</span>(slice2))</span><br></pre></td></tr></table></figure>
+
+
+
+</li>
+</ul>
+<p>  我们知道原始的 slice2 对应的底层数组的容量为 9，经过我们一系列的 append 操作，原始的底层数组已经无法容纳更多的元素了，此时 <strong>Go 会分配另外一块内存，把原始切片从位置 1 开始的内存复制到新的内存地址中，也就是说现在的 slice2 切片对应的底层数组和 slice 切片对应的底层数组完全不是在同一个内存地址</strong>，所以当你此时更改 slice2 中的元素时，对 slice 已经来说，反之，slice 操作对slice2没有一点作用，一点儿关系都没有。两个切片的地址就不一样，就是两个完全不一样的切片</p>
+<h3 id="二维数组"><a href="#二维数组" class="headerlink" title="二维数组"></a>二维数组</h3><p>创建方法和基本使用和一维数组一样</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">a := [][]<span class="keyword">int</span>&#123;&#123;<span class="number">1</span>, <span class="number">2</span>&#125;, &#123;<span class="number">3</span>, <span class="number">4</span>&#125;&#125;</span><br><span class="line">	<span class="keyword">for</span> _,value:=<span class="keyword">range</span>(a)&#123;</span><br><span class="line">		<span class="keyword">for</span> _,value1:=<span class="keyword">range</span>(value)&#123;</span><br><span class="line">			fmt.Println(value1)</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在内存中的存储</p>
+<p>存储两个地址，分别指向不同地方</p>
+<p><img src="https://saxon.oss-cn-shenzhen.aliyuncs.com/blog/image-20201208135244220.png" alt="image-20201208135244220"></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">Saxon</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://www.saxonmo.com/2020/12/11/Go%E4%B9%8B%E6%95%B0%E7%BB%84%E4%B8%8E%E5%88%87%E7%89%87/">http://www.saxonmo.com/2020/12/11/Go%E4%B9%8B%E6%95%B0%E7%BB%84%E4%B8%8E%E5%88%87%E7%89%87/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://www.saxonmo.com" target="_blank">Saxon 一个向往远方的游者</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E6%8A%80%E6%9C%AF/">技术</a></div><div class="post_share"><div class="social-share" data-image="https://saxon.oss-cn-shenzhen.aliyuncs.com/blog/go.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2020/12/11/Go%E4%B9%8BMap/"><img class="prev-cover" src="https://saxon.oss-cn-shenzhen.aliyuncs.com/blog/go.jpg" onerror="onerror=null;src='/img/404.jpg'"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">Go之Map</div></div></a></div><div class="next-post pull-right"><a href="/2020/12/11/Go%E4%B9%8B%E5%87%BD%E6%95%B0%E3%80%81%E5%8C%85%E3%80%81%E9%94%99%E8%AF%AF%E5%A4%84%E7%90%86/"><img class="next-cover" src="https://saxon.oss-cn-shenzhen.aliyuncs.com/blog/go.jpg" onerror="onerror=null;src='/img/404.jpg'"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Go之函数、包、错误处理</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span> 相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2020/12/11/DockerCompose集群搭建/" title="Docker Compose集群搭建"><img class="cover" src="https://saxon.oss-cn-shenzhen.aliyuncs.com/blog/u=1167116189,1935478605&fm=26&gp=0.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-12-11</div><div class="title">Docker Compose集群搭建</div></div></a></div><div><a href="/2020/12/11/Docker基本介绍/" title="Docker基本介绍"><img class="cover" src="https://saxon.oss-cn-shenzhen.aliyuncs.com/blog/u=1167116189,1935478605&fm=26&gp=0.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-12-11</div><div class="title">Docker基本介绍</div></div></a></div><div><a href="/2020/12/11/DockerFile/" title="DockerFile"><img class="cover" src="https://saxon.oss-cn-shenzhen.aliyuncs.com/blog/u=1167116189,1935478605&fm=26&gp=0.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-12-11</div><div class="title">DockerFile</div></div></a></div><div><a href="/2020/12/11/Docker数据卷技术/" title="Docker数据卷技术"><img class="cover" src="https://saxon.oss-cn-shenzhen.aliyuncs.com/blog/u=1167116189,1935478605&fm=26&gp=0.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-12-11</div><div class="title">Docker数据卷技术</div></div></a></div><div><a href="/2020/12/11/Docker基本命令/" title="Docker基本命令"><img class="cover" src="https://saxon.oss-cn-shenzhen.aliyuncs.com/blog/u=1167116189,1935478605&fm=26&gp=0.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-12-11</div><div class="title">Docker基本命令</div></div></a></div><div><a href="/2020/12/11/Docker镜像/" title="Docker镜像"><img class="cover" src="https://saxon.oss-cn-shenzhen.aliyuncs.com/blog/u=1167116189,1935478605&fm=26&gp=0.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-12-11</div><div class="title">Docker镜像</div></div></a></div></div></div></div><div class="aside_content" id="aside_content"><div class="card-widget card-info"><div class="card-content"><div class="card-info-avatar is-center"><img class="avatar-img" src="https://w.wallhaven.cc/full/2e/wallhaven-2eroxm.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/><div class="author-info__name">Saxon</div><div class="author-info__description">无论走得多慢，我一直向往远方</div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">125</div></a></div><div class="card-info-data-item is-center"><a href="/tags/"><div class="headline">标签</div><div class="length-num">2</div></a></div><div class="card-info-data-item is-center"><a href="/categories/"><div class="headline">分类</div><div class="length-num">14</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/SaxonMo"><i class="fab fa-github"></i><span>Github</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/xxxxx" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:xxxxxx@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div></div><div class="card-widget card-announcement"><div class="card-content"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">欢迎来到莫松的博客，一个在校二本大学生🧑‍🎓。在这个博客里，我会分享自己自学的笔记，不为感动自己，只为给自己的代码时光留下些回忆</div></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="card-content"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B0%E7%BB%84%E4%B8%8E%E5%88%87%E7%89%87"><span class="toc-number">1.</span> <span class="toc-text">数组与切片</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B0%E7%BB%84"><span class="toc-number">1.1.</span> <span class="toc-text">数组</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%95%B0%E7%BB%84%E5%9C%A8%E5%86%85%E5%AD%98%E4%B8%AD%E7%9A%84%E5%B8%83%E5%B1%80"><span class="toc-number">1.1.1.</span> <span class="toc-text">数组在内存中的布局</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%87%E7%89%87"><span class="toc-number">1.2.</span> <span class="toc-text">切片</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%8C%E7%BB%B4%E6%95%B0%E7%BB%84"><span class="toc-number">1.3.</span> <span class="toc-text">二维数组</span></a></li></ol></li></ol></div></div></div><div class="card-widget card-recent-post"><div class="card-content"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2020/12/11/Go%E4%B9%8B%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E7%BC%96%E7%A8%8B/" title="Go之面向对象编程"><img src="https://saxon.oss-cn-shenzhen.aliyuncs.com/blog/go.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Go之面向对象编程"/></a><div class="content"><a class="title" href="/2020/12/11/Go%E4%B9%8B%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E7%BC%96%E7%A8%8B/" title="Go之面向对象编程">Go之面向对象编程</a><time datetime="2020-12-11T08:28:39.000Z" title="发表于 2020-12-11 16:28:39">2020-12-11</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2020/12/11/Go%E4%B9%8BMap/" title="Go之Map"><img src="https://saxon.oss-cn-shenzhen.aliyuncs.com/blog/go.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Go之Map"/></a><div class="content"><a class="title" href="/2020/12/11/Go%E4%B9%8BMap/" title="Go之Map">Go之Map</a><time datetime="2020-12-11T08:28:20.000Z" title="发表于 2020-12-11 16:28:20">2020-12-11</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2020/12/11/Go%E4%B9%8B%E6%95%B0%E7%BB%84%E4%B8%8E%E5%88%87%E7%89%87/" title="Go之数组与切片"><img src="https://saxon.oss-cn-shenzhen.aliyuncs.com/blog/go.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Go之数组与切片"/></a><div class="content"><a class="title" href="/2020/12/11/Go%E4%B9%8B%E6%95%B0%E7%BB%84%E4%B8%8E%E5%88%87%E7%89%87/" title="Go之数组与切片">Go之数组与切片</a><time datetime="2020-12-11T08:28:15.000Z" title="发表于 2020-12-11 16:28:15">2020-12-11</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2020/12/11/Go%E4%B9%8B%E5%87%BD%E6%95%B0%E3%80%81%E5%8C%85%E3%80%81%E9%94%99%E8%AF%AF%E5%A4%84%E7%90%86/" title="Go之函数、包、错误处理"><img src="https://saxon.oss-cn-shenzhen.aliyuncs.com/blog/go.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Go之函数、包、错误处理"/></a><div class="content"><a class="title" href="/2020/12/11/Go%E4%B9%8B%E5%87%BD%E6%95%B0%E3%80%81%E5%8C%85%E3%80%81%E9%94%99%E8%AF%AF%E5%A4%84%E7%90%86/" title="Go之函数、包、错误处理">Go之函数、包、错误处理</a><time datetime="2020-12-11T08:28:01.000Z" title="发表于 2020-12-11 16:28:01">2020-12-11</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2020/12/11/Go%E4%B9%8B%E7%A8%8B%E5%BA%8F%E6%B5%81%E7%A8%8B%E6%8E%A7%E5%88%B6/" title="Go之程序流程控制"><img src="https://saxon.oss-cn-shenzhen.aliyuncs.com/blog/go.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Go之程序流程控制"/></a><div class="content"><a class="title" href="/2020/12/11/Go%E4%B9%8B%E7%A8%8B%E5%BA%8F%E6%B5%81%E7%A8%8B%E6%8E%A7%E5%88%B6/" title="Go之程序流程控制">Go之程序流程控制</a><time datetime="2020-12-11T08:27:43.000Z" title="发表于 2020-12-11 16:27:43">2020-12-11</time></div></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 By Saxon</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="icp"><a><img class="icp-icon" src="/img/icp.png" alt="ICP"/><span>滇ICP备2020007353号-1</span></a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><div class="js-pjax"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div><script id="click-heart" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/click-heart.min.js" async="async" mobile="false"></script></div></body></html>
