@@ -1,0 +1,178 @@
+<!DOCTYPE html><html lang="zh_CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>SpringCloud之Eureka和Zookeeper的区别 | Saxon 一个向往远方的游者</title><meta name="keywords" content="技术"><meta name="author" content="Saxon"><meta name="copyright" content="Saxon"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><meta name="description" content="SpringCloud Eureka和zookeeper的区别">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SpringCloud之Eureka和Zookeeper的区别">
+<meta property="og:url" content="http://www.saxonmo.com/2020/12/11/SpringCloud%E4%B9%8BEureka%E5%92%8CZookeeper%E7%9A%84%E5%8C%BA%E5%88%AB/index.html">
+<meta property="og:site_name" content="Saxon 一个向往远方的游者">
+<meta property="og:description" content="SpringCloud Eureka和zookeeper的区别">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://saxon.oss-cn-shenzhen.aliyuncs.com/blog/springcloud.jpg">
+<meta property="article:published_time" content="2020-12-11T07:41:30.000Z">
+<meta property="article:modified_time" content="2020-12-11T07:54:17.170Z">
+<meta property="article:author" content="Saxon">
+<meta property="article:tag" content="技术">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://saxon.oss-cn-shenzhen.aliyuncs.com/blog/springcloud.jpg"><link rel="shortcut icon" href="/img/1.png"><link rel="canonical" href="http://www.saxonmo.com/2020/12/11/SpringCloud%E4%B9%8BEureka%E5%92%8CZookeeper%E7%9A%84%E5%8C%BA%E5%88%AB/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  ClickShowText: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  justifiedGallery: {
+    js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+    css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isanchor: false
+};
+
+var saveToLocal = {
+  set: function setWithExpiry(key, value, ttl) {
+    const now = new Date()
+    const expiryDay = ttl * 86400000
+    const item = {
+      value: value,
+      expiry: now.getTime() + expiryDay,
+    }
+    localStorage.setItem(key, JSON.stringify(item))
+  },
+
+  get: function getWithExpiry(key) {
+    const itemStr = localStorage.getItem(key)
+
+    if (!itemStr) {
+      return undefined
+    }
+    const item = JSON.parse(itemStr)
+    const now = new Date()
+
+    if (now.getTime() > item.expiry) {
+      localStorage.removeItem(key)
+      return undefined
+    }
+    return item.value
+  }
+}</script><script id="config_change">var GLOBAL_CONFIG_SITE = { 
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2020-12-11 15:54:17'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(function () {  window.activateDarkMode = function () {
+    document.documentElement.setAttribute('data-theme', 'dark')
+    if (document.querySelector('meta[name="theme-color"]') !== null) {
+      document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+    }
+  }
+  window.activateLightMode = function () {
+    document.documentElement.setAttribute('data-theme', 'light')
+   if (document.querySelector('meta[name="theme-color"]') !== null) {
+      document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+    }
+  }
+  const autoChangeMode = 'false'
+  const t = saveToLocal.get('theme')
+  if (autoChangeMode === '1') {
+    const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+    const isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+    const isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+    const hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+    if (t === undefined) {
+      if (isLightMode) activateLightMode()
+      else if (isDarkMode) activateDarkMode()
+      else if (isNotSpecified || hasNoSupport) {
+        const now = new Date()
+        const hour = now.getHours()
+        const isNight = hour <= 6 || hour >= 18
+        isNight ? activateDarkMode() : activateLightMode()
+      }
+      window.matchMedia('(prefers-color-scheme: dark)').addListener(function (e) {
+        if (saveToLocal.get('theme') === undefined) {
+          e.matches ? activateDarkMode() : activateLightMode()
+        }
+      })
+    } else if (t === 'light') activateLightMode()
+    else activateDarkMode()
+  } else if (autoChangeMode === '2') {
+    const now = new Date()
+    const hour = now.getHours()
+    const isNight = hour <= 6 || hour >= 18
+    if (t === undefined) isNight ? activateDarkMode() : activateLightMode()
+    else if (t === 'light') activateLightMode()
+    else activateDarkMode()
+  } else {
+    if (t === 'dark') activateDarkMode()
+    else if (t === 'light') activateLightMode()
+  }const asideStatus = saveToLocal.get('aside-status')
+if (asideStatus !== undefined) {
+   if (asideStatus === 'hide') {
+     document.documentElement.classList.add('hide-aside')
+   } else {
+     document.documentElement.classList.remove('hide-aside')
+   }
+}})()</script><meta name="generator" content="Hexo 5.2.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="author-avatar"><img class="avatar-img" src="https://w.wallhaven.cc/full/2e/wallhaven-2eroxm.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">110</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">2</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">13</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 清单</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(https://w.wallhaven.cc/full/2e/wallhaven-2eroxm.jpg)"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">Saxon 一个向往远方的游者</a></span><span id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 清单</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><span class="close" id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></span></span></nav><div id="post-info"><h1 class="post-title">SpringCloud之Eureka和Zookeeper的区别</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2020-12-11T07:41:30.000Z" title="发表于 2020-12-11 15:41:30">2020-12-11</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2020-12-11T07:54:17.170Z" title="更新于 2020-12-11 15:54:17">2020-12-11</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/SpringCloud/">SpringCloud</a></span></div><div class="meta-secondline"> <span class="post-meta-separator">|</span><span class="post-meta-pv-cv"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="Eureka和zookeeper的区别"><a href="#Eureka和zookeeper的区别" class="headerlink" title="Eureka和zookeeper的区别"></a>Eureka和zookeeper的区别</h2><h3 id="原文地址：Eureka和zookeeper的区别"><a href="#原文地址：Eureka和zookeeper的区别" class="headerlink" title="原文地址：Eureka和zookeeper的区别"></a><a href=":https://www.cnblogs.com/jichi/p/12797557.html">原文地址：Eureka和zookeeper的区别</a></h3><h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>最近在面试的时候，被问到了这个问题，作答的不是很好，在此进行整理和学习，希望能够帮助大家。</p>
+<h3 id="CAP理论"><a href="#CAP理论" class="headerlink" title="CAP理论"></a>CAP理论</h3><p>在了解eureka和zookeeper区别之前，我们先来了解一下这个知识，cap理论。<br>1998年的加州大学的计算机科学家 Eric Brewer 提出，分布式有三个指标。Consistency，Availability，Partition tolerance。简称即为CAP。Eric 提出 CAP 不能全部达到，这就是CAP定理。<br><img src="https://saxon.oss-cn-shenzhen.aliyuncs.com/blog/1534147-20200428214309333-88181674.png" alt="img"><br>接下来我们分别说下cap。</p>
+<h4 id="C"><a href="#C" class="headerlink" title="C"></a>C</h4><p>Consistency，一致性的意思。<br>一致性就是说，我们读写数据必须是一摸一样的。<br>比如一条数据，分别存在两个服务器中，server1和server2。<br>我们此时将数据a通过server1修改为数据b。此时如果我们访问server1访问的应该是b。<br>当我们访问server2的时候，如果返回的还是未修改的a，那么则不符合一致性，如果返回的是b，则符合数据的一致性。</p>
+<h4 id="A"><a href="#A" class="headerlink" title="A"></a>A</h4><p>Availability，可用性的意思。<br>这个比较好理解，就是说，只要我对服务器，发送请求，服务器必须对我进行相应，保证服务器一直是可用的。</p>
+<h4 id="P"><a href="#P" class="headerlink" title="P"></a>P</h4><p>Partition tolerance，分区容错的意思。<br>一般来说，分布式系统是分布在多个位置的。比如我们的一台服务器在北京，一台在上海。可能由于天气等原因的影响。造成了两条服务器直接不能互相通信，数据不能进行同步。这就是分区容错。我们认为，分区容错是不可避免的。也就是说 P 是必然存在的。</p>
+<h4 id="为什么CAP只能达到-CP-或者-AP？"><a href="#为什么CAP只能达到-CP-或者-AP？" class="headerlink" title="为什么CAP只能达到 CP 或者 AP？"></a>为什么CAP只能达到 CP 或者 AP？</h4><p>由以上我们得知，P是必然存在的。<br>如果我们保证了CP，即一致性与分布容错。当我们通过一个服务器修改数据后，该服务器会向另一个服务器发送请求，将数据进行同步，但此时，该数据应处于锁定状态，不可再次修改，这样，如果此时我们想服务器发送请求，则得不到相应，这样就不能A，高可用。<br>如果我们保证了AP，那么我们不能对服务器进行锁定，任何时候都要得到相应，那么数据的一致性就不好说了。</p>
+<h4 id="eureka和zookeeper的cap理论"><a href="#eureka和zookeeper的cap理论" class="headerlink" title="eureka和zookeeper的cap理论"></a>eureka和zookeeper的cap理论</h4><p>eureka是基于ap的。zookeeper是基于cp的。</p>
+<h3 id="Eureka的实现"><a href="#Eureka的实现" class="headerlink" title="Eureka的实现"></a>Eureka的实现</h3><p>eureka的架构实现图如下：<br><img src="https://saxon.oss-cn-shenzhen.aliyuncs.com/blog/1534147-20200428214622485-1527969682.png" alt="img"></p>
+<h4 id="eureka的基本原理"><a href="#eureka的基本原理" class="headerlink" title="eureka的基本原理"></a>eureka的基本原理</h4><p>上图是来自eureka的官方架构图，这是基于集群配置的eureka；</p>
+<ul>
+<li>处于不同节点的eureka通过Replicate进行数据同步</li>
+<li>Application Service为服务提供者</li>
+<li>Application Client为服务消费者</li>
+<li>Make Remote Call完成一次服务调用</li>
+</ul>
+<p>服务启动后向Eureka注册，Eureka Server会将注册信息向其他Eureka Server进行同步，当服务消费者要调用服务提供者，则向服务注册中心获取服务提供者地址，然后会将服务提供者地址缓存在本地，下次再调用时，则直接从本地缓存中取，完成一次调用。</p>
+<p>当服务注册中心Eureka Server检测到服务提供者因为宕机、网络原因不可用时，则在服务注册中心将服务置为DOWN状态，并把当前服务提供者状态向订阅者发布，订阅过的服务消费者更新本地缓存。</p>
+<p>服务提供者在启动后，周期性（默认30秒）向Eureka Server发送心跳，以证明当前服务是可用状态。Eureka Server在一定的时间（默认90秒）未收到客户端的心跳，则认为服务宕机，注销该实例。</p>
+<h4 id="eureka的自我保护机制"><a href="#eureka的自我保护机制" class="headerlink" title="eureka的自我保护机制"></a>eureka的自我保护机制</h4><p>在默认配置中，Eureka Server在默认90s没有得到客户端的心跳，则注销该实例，但是往往因为微服务跨进程调用，网络通信往往会面临着各种问题，比如微服务状态正常，但是因为网络分区故障时，Eureka Server注销服务实例则会让大部分微服务不可用，这很危险，因为服务明明没有问题。</p>
+<p>为了解决这个问题，Eureka 有自我保护机制，通过在Eureka Server配置如下参数，可启动保护机制。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">eureka.server.enable-self-preservation&#x3D;true</span><br></pre></td></tr></table></figure>
+
+<p>它的原理是，当Eureka Server节点在短时间内丢失过多的客户端时（可能发送了网络故障），那么这个节点将进入自我保护模式，不再注销任何微服务，当网络故障回复后，该节点会自动退出自我保护模式。</p>
+<h3 id="eureka保证ap"><a href="#eureka保证ap" class="headerlink" title="eureka保证ap"></a>eureka保证ap</h3><p>eureka优先保证可用性。在Eureka平台中，如果某台服务器宕机，Eureka不会有类似于ZooKeeper的选举leader的过程；客户端请求会自动切换 到新的Eureka节点；当宕机的服务器重新恢复后，Eureka会再次将其纳入到服务器集群管理之中；而对于它来说，所有要做的无非是同步一些新的服务 注册信息而已。所以，再也不用担心有“掉队”的服务器恢复以后，会从Eureka服务器集群中剔除出去的风险了。Eureka甚至被设计用来应付范围更广 的网络分割故障，并实现“0”宕机维护需求。当网络分割故障发生时，每个Eureka节点，会持续的对外提供服务（注：ZooKeeper不会）：接收新 的服务注册同时将它们提供给下游的服务发现请求。这样一来，就可以实现在同一个子网中（same side of partition），新发布的服务仍然可以被发现与访问。Eureka各个节点都是平等的，几个节点挂掉不会影响正常节点的工作，剩余的节点依然可以提供注册和查询服务。而Eureka的客户端在向某个Eureka注册或时如果发现连接失败，则会自动切换至其它节点，只要有一台Eureka还在，就能保证注册服务可用(保证可用性)，只不过查到的信息可能不是最新的(不保证强一致性)。除此之外，Eureka还有一种自我保护机制，如果在15分钟内超过85%的节点都没有正常的心跳，那么Eureka就认为客户端与注册中心出现了网络故障，此时会出现以下几种情况：</p>
+<ol>
+<li>Eureka不再从注册列表中移除因为长时间没收到心跳而应该过期的服务</li>
+<li>Eureka仍然能够接受新服务的注册和查询请求，但是不会被同步到其它节点上(即保证当前节点依然可用)</li>
+<li>当网络稳定时，当前实例新的注册信息会被同步到其它节点中<br>Eureka还有客户端缓存功能（注：Eureka分为客户端程序与服务器端程序两个部分，客户端程序负责向外提供注册与发现服务接口）。 所以即便Eureka集群中所有节点都失效，或者发生网络分割故障导致客户端不能访问任何一台Eureka服务器；Eureka服务的消费者仍然可以通过 Eureka客户端缓存来获取现有的服务注册信息。甚至最极端的环境下，所有正常的Eureka节点都不对请求产生相应，也没有更好的服务器解决方案来解 决这种问题时；得益于Eureka的客户端缓存技术，消费者服务仍然可以通过Eureka客户端查询与获取注册服务信息。</li>
+</ol>
+<h3 id="zookeeper保证cp"><a href="#zookeeper保证cp" class="headerlink" title="zookeeper保证cp"></a>zookeeper保证cp</h3><p>作为一个分布式协同服务，ZooKeeper非常好，但是对于Service发现服务来说就不合适了；因为对于Service发现服务来说就算是 返回了包含不实的信息的结果也比什么都不返回要好；再者，对于Service发现服务而言，宁可返回某服务5分钟之前在哪几个服务器上可用的信息，也不能 因为暂时的网络故障而找不到可用的服务器，而不返回任何结果。所以说，用ZooKeeper来做Service发现服务是肯定错误的。<br>当向注册中心查询服务列表时，我们可以容忍注册中心返回的是几分钟以前的注册信息，但不能接受服务直接down掉不可用。也就是说，服务注册功能对可用性的要求要高于一致性。但是zk会出现这样一种情况，当master节点因为网络故障与其他节点失去联系时，剩余节点会重新进行leader选举。问题在于，选举leader的时间太长，30 ~ 120s, 且选举期间整个zk集群都是不可用的，这就导致在选举期间注册服务瘫痪。在云部署的环境下，因网络问题使得zk集群失去master节点是较大概率会发生的事，虽然服务能够最终恢复，但是漫长的选举时间导致的注册长期不可用是不能容忍的。</p>
+<h3 id="eureka和zookeeper的区别总结"><a href="#eureka和zookeeper的区别总结" class="headerlink" title="eureka和zookeeper的区别总结"></a>eureka和zookeeper的区别总结</h3><p>Eureka可以很好的应对因网络故障导致部分节点失去联系的情况，而不会像zookeeper那样使整个注册服务瘫痪。Eureka作为单纯的服务注册中心来说要比zookeeper更加“专业”，因为注册服务更重要的是可用性，我们可以接受短期内达不到一致性的状况。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">Saxon</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://www.saxonmo.com/2020/12/11/SpringCloud%E4%B9%8BEureka%E5%92%8CZookeeper%E7%9A%84%E5%8C%BA%E5%88%AB/">http://www.saxonmo.com/2020/12/11/SpringCloud%E4%B9%8BEureka%E5%92%8CZookeeper%E7%9A%84%E5%8C%BA%E5%88%AB/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://www.saxonmo.com" target="_blank">Saxon 一个向往远方的游者</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E6%8A%80%E6%9C%AF/">技术</a></div><div class="post_share"><div class="social-share" data-image="https://saxon.oss-cn-shenzhen.aliyuncs.com/blog/springcloud.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2020/12/11/SpringCloud%E4%B9%8B%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1/"><img class="prev-cover" src="https://saxon.oss-cn-shenzhen.aliyuncs.com/blog/springcloud.jpg" onerror="onerror=null;src='/img/404.jpg'"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">SpringCloud之负载均衡</div></div></a></div><div class="next-post pull-right"><a href="/2020/12/11/SpringCloud%E4%B9%8BEureka%E9%9B%86%E7%BE%A4%E9%85%8D%E7%BD%AE/"><img class="next-cover" src="https://saxon.oss-cn-shenzhen.aliyuncs.com/blog/springcloud.jpg" onerror="onerror=null;src='/img/404.jpg'"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">SpringCloud之Eureka集群配置</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span> 相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2020/12/11/DockerCompose集群搭建/" title="Docker Compose集群搭建"><img class="cover" src="https://saxon.oss-cn-shenzhen.aliyuncs.com/blog/u=1167116189,1935478605&fm=26&gp=0.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-12-11</div><div class="title">Docker Compose集群搭建</div></div></a></div><div><a href="/2020/12/11/Docker基本介绍/" title="Docker基本介绍"><img class="cover" src="https://saxon.oss-cn-shenzhen.aliyuncs.com/blog/u=1167116189,1935478605&fm=26&gp=0.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-12-11</div><div class="title">Docker基本介绍</div></div></a></div><div><a href="/2020/12/11/DockerFile/" title="DockerFile"><img class="cover" src="https://saxon.oss-cn-shenzhen.aliyuncs.com/blog/u=1167116189,1935478605&fm=26&gp=0.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-12-11</div><div class="title">DockerFile</div></div></a></div><div><a href="/2020/12/11/Docker数据卷技术/" title="Docker数据卷技术"><img class="cover" src="https://saxon.oss-cn-shenzhen.aliyuncs.com/blog/u=1167116189,1935478605&fm=26&gp=0.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-12-11</div><div class="title">Docker数据卷技术</div></div></a></div><div><a href="/2020/12/11/Docker基本命令/" title="Docker基本命令"><img class="cover" src="https://saxon.oss-cn-shenzhen.aliyuncs.com/blog/u=1167116189,1935478605&fm=26&gp=0.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-12-11</div><div class="title">Docker基本命令</div></div></a></div><div><a href="/2020/12/11/Docker镜像/" title="Docker镜像"><img class="cover" src="https://saxon.oss-cn-shenzhen.aliyuncs.com/blog/u=1167116189,1935478605&fm=26&gp=0.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-12-11</div><div class="title">Docker镜像</div></div></a></div></div></div></div><div class="aside_content" id="aside_content"><div class="card-widget card-info"><div class="card-content"><div class="card-info-avatar is-center"><img class="avatar-img" src="https://w.wallhaven.cc/full/2e/wallhaven-2eroxm.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/><div class="author-info__name">Saxon</div><div class="author-info__description">无论走得多慢，我一直向往远方</div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">110</div></a></div><div class="card-info-data-item is-center"><a href="/tags/"><div class="headline">标签</div><div class="length-num">2</div></a></div><div class="card-info-data-item is-center"><a href="/categories/"><div class="headline">分类</div><div class="length-num">13</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/SaxonMo"><i class="fab fa-github"></i><span>Github</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/xxxxx" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:xxxxxx@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div></div><div class="card-widget card-announcement"><div class="card-content"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">欢迎来到莫松的博客，一个在校二本大学生🧑‍🎓。在这个博客里，我会分享自己自学的笔记，不为感动自己，只为给自己的代码时光留下些回忆</div></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="card-content"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Eureka%E5%92%8Czookeeper%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">1.</span> <span class="toc-text">Eureka和zookeeper的区别</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8E%9F%E6%96%87%E5%9C%B0%E5%9D%80%EF%BC%9AEureka%E5%92%8Czookeeper%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">1.1.</span> <span class="toc-text">原文地址：Eureka和zookeeper的区别</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.2.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#CAP%E7%90%86%E8%AE%BA"><span class="toc-number">1.3.</span> <span class="toc-text">CAP理论</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#C"><span class="toc-number">1.3.1.</span> <span class="toc-text">C</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#A"><span class="toc-number">1.3.2.</span> <span class="toc-text">A</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#P"><span class="toc-number">1.3.3.</span> <span class="toc-text">P</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88CAP%E5%8F%AA%E8%83%BD%E8%BE%BE%E5%88%B0-CP-%E6%88%96%E8%80%85-AP%EF%BC%9F"><span class="toc-number">1.3.4.</span> <span class="toc-text">为什么CAP只能达到 CP 或者 AP？</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#eureka%E5%92%8Czookeeper%E7%9A%84cap%E7%90%86%E8%AE%BA"><span class="toc-number">1.3.5.</span> <span class="toc-text">eureka和zookeeper的cap理论</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Eureka%E7%9A%84%E5%AE%9E%E7%8E%B0"><span class="toc-number">1.4.</span> <span class="toc-text">Eureka的实现</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#eureka%E7%9A%84%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86"><span class="toc-number">1.4.1.</span> <span class="toc-text">eureka的基本原理</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#eureka%E7%9A%84%E8%87%AA%E6%88%91%E4%BF%9D%E6%8A%A4%E6%9C%BA%E5%88%B6"><span class="toc-number">1.4.2.</span> <span class="toc-text">eureka的自我保护机制</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#eureka%E4%BF%9D%E8%AF%81ap"><span class="toc-number">1.5.</span> <span class="toc-text">eureka保证ap</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#zookeeper%E4%BF%9D%E8%AF%81cp"><span class="toc-number">1.6.</span> <span class="toc-text">zookeeper保证cp</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#eureka%E5%92%8Czookeeper%E7%9A%84%E5%8C%BA%E5%88%AB%E6%80%BB%E7%BB%93"><span class="toc-number">1.7.</span> <span class="toc-text">eureka和zookeeper的区别总结</span></a></li></ol></li></ol></div></div></div><div class="card-widget card-recent-post"><div class="card-content"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2020/12/11/SpringCloud%E4%B9%8BSpringCloud-Config/" title="SpringCloud之SpringCloud_Config"><img src="https://saxon.oss-cn-shenzhen.aliyuncs.com/blog/springcloud.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="SpringCloud之SpringCloud_Config"/></a><div class="content"><a class="title" href="/2020/12/11/SpringCloud%E4%B9%8BSpringCloud-Config/" title="SpringCloud之SpringCloud_Config">SpringCloud之SpringCloud_Config</a><time datetime="2020-12-11T07:42:43.000Z" title="发表于 2020-12-11 15:42:43">2020-12-11</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2020/12/11/SpringCloud%E4%B9%8BZuul/" title="SpringCloud之Zuul"><img src="https://saxon.oss-cn-shenzhen.aliyuncs.com/blog/springcloud.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="SpringCloud之Zuul"/></a><div class="content"><a class="title" href="/2020/12/11/SpringCloud%E4%B9%8BZuul/" title="SpringCloud之Zuul">SpringCloud之Zuul</a><time datetime="2020-12-11T07:42:24.000Z" title="发表于 2020-12-11 15:42:24">2020-12-11</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2020/12/11/SpringCloud%E4%B9%8BHystrix/" title="SpringCloud之Hystrix"><img src="https://saxon.oss-cn-shenzhen.aliyuncs.com/blog/springcloud.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="SpringCloud之Hystrix"/></a><div class="content"><a class="title" href="/2020/12/11/SpringCloud%E4%B9%8BHystrix/" title="SpringCloud之Hystrix">SpringCloud之Hystrix</a><time datetime="2020-12-11T07:42:13.000Z" title="发表于 2020-12-11 15:42:13">2020-12-11</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2020/12/11/SpringCloud%E4%B9%8BFeign/" title="SpringCloud之Feign"><img src="https://saxon.oss-cn-shenzhen.aliyuncs.com/blog/springcloud.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="SpringCloud之Feign"/></a><div class="content"><a class="title" href="/2020/12/11/SpringCloud%E4%B9%8BFeign/" title="SpringCloud之Feign">SpringCloud之Feign</a><time datetime="2020-12-11T07:41:52.000Z" title="发表于 2020-12-11 15:41:52">2020-12-11</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2020/12/11/SpringCloud%E4%B9%8B%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1/" title="SpringCloud之负载均衡"><img src="https://saxon.oss-cn-shenzhen.aliyuncs.com/blog/springcloud.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="SpringCloud之负载均衡"/></a><div class="content"><a class="title" href="/2020/12/11/SpringCloud%E4%B9%8B%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1/" title="SpringCloud之负载均衡">SpringCloud之负载均衡</a><time datetime="2020-12-11T07:41:40.000Z" title="发表于 2020-12-11 15:41:40">2020-12-11</time></div></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 By Saxon</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="icp"><a><img class="icp-icon" src="/img/icp.png" alt="ICP"/><span>滇ICP备2020007353号-1</span></a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><div class="js-pjax"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div><script id="click-heart" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/click-heart.min.js" async="async" mobile="false"></script></div></body></html>
