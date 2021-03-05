@@ -1,0 +1,179 @@
+<!DOCTYPE html><html lang="zh_CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>RabbitMQ之RabbitMQ的集群配置 | Saxon 一个向往远方的游者</title><meta name="keywords" content="技术"><meta name="author" content="Saxon"><meta name="copyright" content="Saxon"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><meta name="description" content="RabbitMQ之RabbitMQ的集群配置">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RabbitMQ之RabbitMQ的集群配置">
+<meta property="og:url" content="http://www.saxonmo.com/2021/03/05/RabbitMQ%E4%B9%8BRabbitMQ%E7%9A%84%E9%9B%86%E7%BE%A4%E9%85%8D%E7%BD%AE/index.html">
+<meta property="og:site_name" content="Saxon 一个向往远方的游者">
+<meta property="og:description" content="RabbitMQ之RabbitMQ的集群配置">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://saxon.oss-cn-shenzhen.aliyuncs.com/blog/e615ea24c3506e19a8d83d440b471dc7.jpeg">
+<meta property="article:published_time" content="2021-03-05T10:51:22.000Z">
+<meta property="article:modified_time" content="2021-03-05T10:57:32.777Z">
+<meta property="article:author" content="Saxon">
+<meta property="article:tag" content="技术">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://saxon.oss-cn-shenzhen.aliyuncs.com/blog/e615ea24c3506e19a8d83d440b471dc7.jpeg"><link rel="shortcut icon" href="/img/1.png"><link rel="canonical" href="http://www.saxonmo.com/2021/03/05/RabbitMQ%E4%B9%8BRabbitMQ%E7%9A%84%E9%9B%86%E7%BE%A4%E9%85%8D%E7%BD%AE/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  ClickShowText: {"text":"while(),if(),exit","fontSize":"15px"},
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  justifiedGallery: {
+    js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+    css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isanchor: false
+};
+
+var saveToLocal = {
+  set: function setWithExpiry(key, value, ttl) {
+    const now = new Date()
+    const expiryDay = ttl * 86400000
+    const item = {
+      value: value,
+      expiry: now.getTime() + expiryDay,
+    }
+    localStorage.setItem(key, JSON.stringify(item))
+  },
+
+  get: function getWithExpiry(key) {
+    const itemStr = localStorage.getItem(key)
+
+    if (!itemStr) {
+      return undefined
+    }
+    const item = JSON.parse(itemStr)
+    const now = new Date()
+
+    if (now.getTime() > item.expiry) {
+      localStorage.removeItem(key)
+      return undefined
+    }
+    return item.value
+  }
+}</script><script id="config_change">var GLOBAL_CONFIG_SITE = { 
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2021-03-05 18:57:32'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(function () {  window.activateDarkMode = function () {
+    document.documentElement.setAttribute('data-theme', 'dark')
+    if (document.querySelector('meta[name="theme-color"]') !== null) {
+      document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+    }
+  }
+  window.activateLightMode = function () {
+    document.documentElement.setAttribute('data-theme', 'light')
+   if (document.querySelector('meta[name="theme-color"]') !== null) {
+      document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+    }
+  }
+  const autoChangeMode = 'false'
+  const t = saveToLocal.get('theme')
+  if (autoChangeMode === '1') {
+    const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+    const isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+    const isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+    const hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+    if (t === undefined) {
+      if (isLightMode) activateLightMode()
+      else if (isDarkMode) activateDarkMode()
+      else if (isNotSpecified || hasNoSupport) {
+        const now = new Date()
+        const hour = now.getHours()
+        const isNight = hour <= 6 || hour >= 18
+        isNight ? activateDarkMode() : activateLightMode()
+      }
+      window.matchMedia('(prefers-color-scheme: dark)').addListener(function (e) {
+        if (saveToLocal.get('theme') === undefined) {
+          e.matches ? activateDarkMode() : activateLightMode()
+        }
+      })
+    } else if (t === 'light') activateLightMode()
+    else activateDarkMode()
+  } else if (autoChangeMode === '2') {
+    const now = new Date()
+    const hour = now.getHours()
+    const isNight = hour <= 6 || hour >= 18
+    if (t === undefined) isNight ? activateDarkMode() : activateLightMode()
+    else if (t === 'light') activateLightMode()
+    else activateDarkMode()
+  } else {
+    if (t === 'dark') activateDarkMode()
+    else if (t === 'light') activateLightMode()
+  }const asideStatus = saveToLocal.get('aside-status')
+if (asideStatus !== undefined) {
+   if (asideStatus === 'hide') {
+     document.documentElement.classList.add('hide-aside')
+   } else {
+     document.documentElement.classList.remove('hide-aside')
+   }
+}})()</script><meta name="generator" content="Hexo 5.2.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="author-avatar"><img class="avatar-img" src="https://w.wallhaven.cc/full/2e/wallhaven-2eroxm.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">128</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">3</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">20</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(https://w.wallhaven.cc/full/2e/wallhaven-2eroxm.jpg)"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">Saxon 一个向往远方的游者</a></span><span id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><span class="close" id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></span></span></nav><div id="post-info"><h1 class="post-title">RabbitMQ之RabbitMQ的集群配置</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2021-03-05T10:51:22.000Z" title="发表于 2021-03-05 18:51:22">2021-03-05</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2021-03-05T10:57:32.777Z" title="更新于 2021-03-05 18:57:32">2021-03-05</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/RabbitMQ/">RabbitMQ</a></span></div><div class="meta-secondline"> <span class="post-meta-separator">|</span><span class="post-meta-pv-cv"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="MQ的使用场景"><a href="#MQ的使用场景" class="headerlink" title="MQ的使用场景"></a>MQ的使用场景</h2><p>削峰，异步，解耦</p>
+<h2 id="MQ集群分布"><a href="#MQ集群分布" class="headerlink" title="MQ集群分布"></a>MQ集群分布</h2><h4 id="环境配置："><a href="#环境配置：" class="headerlink" title="环境配置："></a>环境配置：</h4><p><strong>修改路由表：因为我们的rabbit@+ip：这里不可以写ip所以我们就写一个路由表直接映射，linux再/etc/hosts下面</strong></p>
+<p><strong>如果使用的yum下载的话，那么我们是没有配置文件的；所以我们就自己建立一个配置文件</strong></p>
+<p><strong>配置文件的地址：<a target="_blank" rel="noopener" href="https://github.com/rabbitmq/rabbitmq-server/blob/v3.8.x/deps/rabbit/docs/rabbitmq.conf.example">https://github.com/rabbitmq/rabbitmq-server/blob/v3.8.x/deps/rabbit/docs/rabbitmq.conf.example</a></strong></p>
+<p>配置文件放置的位置就在你的安装目录下；</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@iZwz94khotag1q066igytrZ rabbitmq]<span class="comment"># whereis rabbitmq</span></span><br><span class="line">rabbitmq: /usr/lib/rabbitmq /etc/rabbitmq</span><br></pre></td></tr></table></figure>
+
+<p><strong>我放置的地方是：/etc/rabbitmq目录下</strong></p>
+<p>配置完了重启服务，打开页面发现下面的界面就配置成功了</p>
+<p><img src="https://saxon.oss-cn-shenzhen.aliyuncs.com/blog/image-20210304214349359.png" alt="image-20210304214349359"></p>
+<h3 id="1-主从模式"><a href="#1-主从模式" class="headerlink" title="1. 主从模式"></a>1. 主从模式</h3><h5 id="1-概念"><a href="#1-概念" class="headerlink" title="1.概念"></a>1.概念</h5><p><img src="https://saxon.oss-cn-shenzhen.aliyuncs.com/blog/20200924160326657.png"></p>
+<p>一个主机配置一个从机，然后从节点可以同步复制主节点的消息内容，<strong>但是如果主节点宕机那么从节点将不会提供服务，但是可以获得从节点的消息</strong></p>
+<h5 id="2-查看cookie"><a href="#2-查看cookie" class="headerlink" title="2.查看cookie"></a>2.查看cookie</h5><p>这是一个隐藏文件夹：</p>
+<p>我们要让所有的集群的cookie一样</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cat /var/lib/rabbitmq/.erlang.cookie</span><br></pre></td></tr></table></figure>
+
+<p><strong>添加节点(在从节点上配置，主节点不变)：</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">1.关闭       rabbitmqctl stop_app</span><br><span class="line">2.加入集群    rabbitmqctl join_cluster rabbit@mq01</span><br><span class="line">3.启动服务    rabbitmqctl start_app</span><br></pre></td></tr></table></figure>
+
+<p>我们需要明白的就是主从的概念，就是谁添加到谁，被添加的就是主节点，主动的就是从节点</p>
+<p>完成上面的步骤以后可以查看集群状态，在任何一个节点上都可以</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rabbitmqctl cluster_status</span><br></pre></td></tr></table></figure>
+
+<p>显示如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line">Cluster status of node rabbit@iZwz94khotag1q066igytrZ ...</span><br><span class="line">Basics</span><br><span class="line"></span><br><span class="line">Cluster name: rabbit@iZwz94khotag1q066igytrZ</span><br><span class="line"></span><br><span class="line">Disk Nodes</span><br><span class="line"></span><br><span class="line">rabbit@iZwz94khotag1q066igytrZ</span><br><span class="line"></span><br><span class="line">RAM Nodes</span><br><span class="line"></span><br><span class="line">rabbit@localhost</span><br><span class="line"></span><br><span class="line">Running Nodes</span><br><span class="line"></span><br><span class="line">rabbit@iZwz94khotag1q066igytrZ</span><br><span class="line">rabbit@localhost</span><br><span class="line"></span><br><span class="line">Versions</span><br><span class="line"></span><br><span class="line">rabbit@iZwz94khotag1q066igytrZ: RabbitMQ 3.8.13 on Erlang 23.2.3</span><br><span class="line">rabbit@localhost:   on Erlang </span><br><span class="line"></span><br><span class="line">Maintenance status</span><br><span class="line"></span><br><span class="line">Node: rabbit@iZwz94khotag1q066igytrZ, status: not under maintenance</span><br><span class="line">Node: rabbit@localhost, status: unknown</span><br><span class="line"></span><br><span class="line">Alarms</span><br><span class="line"></span><br><span class="line">(none)</span><br><span class="line"></span><br><span class="line">Network Partitions</span><br><span class="line"></span><br><span class="line">(none)</span><br><span class="line"></span><br><span class="line">Listeners</span><br><span class="line"></span><br><span class="line">Node: rabbit@iZwz94khotag1q066igytrZ, interface: [::], port: 15672, protocol: http, purpose: HTTP API</span><br><span class="line">Node: rabbit@iZwz94khotag1q066igytrZ, interface: [::], port: 25672, protocol: clustering, purpose: inter-node and CLI tool communication</span><br><span class="line">Node: rabbit@iZwz94khotag1q066igytrZ, interface: [::], port: 5672, protocol: amqp, purpose: AMQP 0-9-1 and AMQP 1.0</span><br><span class="line"></span><br><span class="line">Feature flags</span><br><span class="line"></span><br><span class="line">Flag: drop_unroutable_metric, state: enabled</span><br><span class="line">Flag: empty_basic_get_metric, state: enabled</span><br><span class="line">Flag: implicit_default_bindings, state: enabled</span><br><span class="line">Flag: maintenance_mode_status, state: enabled</span><br><span class="line">Flag: quorum_queue, state: enabled</span><br><span class="line">Flag: user_limits, state: enabled</span><br><span class="line">Flag: virtual_host_metadata, state: enabled</span><br></pre></td></tr></table></figure>
+
+<p>图形界面如下：</p>
+<p><img src="https://saxon.oss-cn-shenzhen.aliyuncs.com/blog/image-20210304224549906.png" alt="image-20210304224549906"></p>
+<h3 id="2-镜像队列配置"><a href="#2-镜像队列配置" class="headerlink" title="2.镜像队列配置"></a>2.镜像队列配置</h3><p>再前面的基础上进行一个规则的制定</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rabbitmqctl set_policy hello <span class="string">&quot;^&quot;</span> <span class="string">&#x27;&#123;&quot;ha-mode&quot;:&quot;all&quot;,&quot;ha-sync-mode&quot;:&quot;automatic&quot;&#125;&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p>就可以使用</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">Saxon</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://www.saxonmo.com/2021/03/05/RabbitMQ%E4%B9%8BRabbitMQ%E7%9A%84%E9%9B%86%E7%BE%A4%E9%85%8D%E7%BD%AE/">http://www.saxonmo.com/2021/03/05/RabbitMQ%E4%B9%8BRabbitMQ%E7%9A%84%E9%9B%86%E7%BE%A4%E9%85%8D%E7%BD%AE/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://www.saxonmo.com" target="_blank">Saxon 一个向往远方的游者</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E6%8A%80%E6%9C%AF/">技术</a></div><div class="post_share"><div class="social-share" data-image="https://saxon.oss-cn-shenzhen.aliyuncs.com/blog/e615ea24c3506e19a8d83d440b471dc7.jpeg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2021/03/05/RabbitMQ%E4%B9%8BRabbitMQ%E5%92%8CSpringBoot%E7%9A%84%E7%BB%93%E5%90%88/"><img class="next-cover" src="https://saxon.oss-cn-shenzhen.aliyuncs.com/blog/e615ea24c3506e19a8d83d440b471dc7.jpeg" onerror="onerror=null;src='/img/404.jpg'"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">RabbitMQ之RabbitMQ和SpringBoot的结合</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span> 相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2020/12/11/DockerFile/" title="DockerFile"><img class="cover" src="https://saxon.oss-cn-shenzhen.aliyuncs.com/blog/u=1167116189,1935478605&fm=26&gp=0.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-12-11</div><div class="title">DockerFile</div></div></a></div><div><a href="/2020/12/11/DockerCompose集群搭建/" title="Docker Compose集群搭建"><img class="cover" src="https://saxon.oss-cn-shenzhen.aliyuncs.com/blog/u=1167116189,1935478605&fm=26&gp=0.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-12-11</div><div class="title">Docker Compose集群搭建</div></div></a></div><div><a href="/2020/12/11/Docker基本命令/" title="Docker基本命令"><img class="cover" src="https://saxon.oss-cn-shenzhen.aliyuncs.com/blog/u=1167116189,1935478605&fm=26&gp=0.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-12-11</div><div class="title">Docker基本命令</div></div></a></div><div><a href="/2020/12/11/Docker基本介绍/" title="Docker基本介绍"><img class="cover" src="https://saxon.oss-cn-shenzhen.aliyuncs.com/blog/u=1167116189,1935478605&fm=26&gp=0.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-12-11</div><div class="title">Docker基本介绍</div></div></a></div><div><a href="/2020/12/11/Docker数据卷技术/" title="Docker数据卷技术"><img class="cover" src="https://saxon.oss-cn-shenzhen.aliyuncs.com/blog/u=1167116189,1935478605&fm=26&gp=0.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-12-11</div><div class="title">Docker数据卷技术</div></div></a></div><div><a href="/2020/12/11/ElasticSearch之IK分词器/" title="ElasticSearch之IK分词器"><img class="cover" src="https://saxon.oss-cn-shenzhen.aliyuncs.com/blog/es1.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-12-11</div><div class="title">ElasticSearch之IK分词器</div></div></a></div></div></div></div><div class="aside_content" id="aside_content"><div class="card-widget card-info"><div class="card-content"><div class="card-info-avatar is-center"><img class="avatar-img" src="https://w.wallhaven.cc/full/2e/wallhaven-2eroxm.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/><div class="author-info__name">Saxon</div><div class="author-info__description">无论走得多慢，我一直向往远方</div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">128</div></a></div><div class="card-info-data-item is-center"><a href="/tags/"><div class="headline">标签</div><div class="length-num">3</div></a></div><div class="card-info-data-item is-center"><a href="/categories/"><div class="headline">分类</div><div class="length-num">20</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/SaxonMo"><i class="fab fa-github"></i><span>Github</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://qm.qq.com/cgi-bin/qm/qr?k=JAm70D2i8DKNuszZ5-csIbIdJQBD_B1Z&amp;noverify=0" target="_blank" title="QQ"><i class="fab fa-qq"></i></a><a class="social-icon" href="https://gitee.com/Saxon_MO" target="_blank" title="Gitee"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:2433027822@qq.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div></div><div class="card-widget card-announcement"><div class="card-content"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">欢迎来到莫松的博客，一个在校二本大学生🧑‍🎓。在这个博客里，我会分享自己自学的笔记，不为感动自己，只为给自己的代码时光留下些回忆</div></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="card-content"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#MQ%E7%9A%84%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="toc-number">1.</span> <span class="toc-text">MQ的使用场景</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#MQ%E9%9B%86%E7%BE%A4%E5%88%86%E5%B8%83"><span class="toc-number">2.</span> <span class="toc-text">MQ集群分布</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE%EF%BC%9A"><span class="toc-number">2.0.1.</span> <span class="toc-text">环境配置：</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E4%B8%BB%E4%BB%8E%E6%A8%A1%E5%BC%8F"><span class="toc-number">2.1.</span> <span class="toc-text">1. 主从模式</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1-%E6%A6%82%E5%BF%B5"><span class="toc-number">2.1.0.1.</span> <span class="toc-text">1.概念</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-%E6%9F%A5%E7%9C%8Bcookie"><span class="toc-number">2.1.0.2.</span> <span class="toc-text">2.查看cookie</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E9%95%9C%E5%83%8F%E9%98%9F%E5%88%97%E9%85%8D%E7%BD%AE"><span class="toc-number">2.2.</span> <span class="toc-text">2.镜像队列配置</span></a></li></ol></li></ol></div></div></div><div class="card-widget card-recent-post"><div class="card-content"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2021/03/05/RabbitMQ%E4%B9%8BRabbitMQ%E7%9A%84%E9%9B%86%E7%BE%A4%E9%85%8D%E7%BD%AE/" title="RabbitMQ之RabbitMQ的集群配置"><img src="https://saxon.oss-cn-shenzhen.aliyuncs.com/blog/e615ea24c3506e19a8d83d440b471dc7.jpeg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="RabbitMQ之RabbitMQ的集群配置"/></a><div class="content"><a class="title" href="/2021/03/05/RabbitMQ%E4%B9%8BRabbitMQ%E7%9A%84%E9%9B%86%E7%BE%A4%E9%85%8D%E7%BD%AE/" title="RabbitMQ之RabbitMQ的集群配置">RabbitMQ之RabbitMQ的集群配置</a><time datetime="2021-03-05T10:51:22.000Z" title="发表于 2021-03-05 18:51:22">2021-03-05</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/03/05/RabbitMQ%E4%B9%8BRabbitMQ%E5%92%8CSpringBoot%E7%9A%84%E7%BB%93%E5%90%88/" title="RabbitMQ之RabbitMQ和SpringBoot的结合"><img src="https://saxon.oss-cn-shenzhen.aliyuncs.com/blog/e615ea24c3506e19a8d83d440b471dc7.jpeg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="RabbitMQ之RabbitMQ和SpringBoot的结合"/></a><div class="content"><a class="title" href="/2021/03/05/RabbitMQ%E4%B9%8BRabbitMQ%E5%92%8CSpringBoot%E7%9A%84%E7%BB%93%E5%90%88/" title="RabbitMQ之RabbitMQ和SpringBoot的结合">RabbitMQ之RabbitMQ和SpringBoot的结合</a><time datetime="2021-03-05T10:51:06.000Z" title="发表于 2021-03-05 18:51:06">2021-03-05</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/03/05/RabbitMQ%E4%B9%8BRabbitMQ%E7%9A%84%E6%B6%88%E6%81%AF%E6%A8%A1%E5%BC%8F/" title="RabbitMQ之RabbitMQ的消息模式"><img src="https://saxon.oss-cn-shenzhen.aliyuncs.com/blog/e615ea24c3506e19a8d83d440b471dc7.jpeg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="RabbitMQ之RabbitMQ的消息模式"/></a><div class="content"><a class="title" href="/2021/03/05/RabbitMQ%E4%B9%8BRabbitMQ%E7%9A%84%E6%B6%88%E6%81%AF%E6%A8%A1%E5%BC%8F/" title="RabbitMQ之RabbitMQ的消息模式">RabbitMQ之RabbitMQ的消息模式</a><time datetime="2021-03-05T10:50:52.000Z" title="发表于 2021-03-05 18:50:52">2021-03-05</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/03/05/RabbitMQ%E4%B9%8BRabbitMQ%E5%AE%89%E8%A3%85/" title="RabbitMQ之RabbitMQ安装"><img src="https://saxon.oss-cn-shenzhen.aliyuncs.com/blog/e615ea24c3506e19a8d83d440b471dc7.jpeg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="RabbitMQ之RabbitMQ安装"/></a><div class="content"><a class="title" href="/2021/03/05/RabbitMQ%E4%B9%8BRabbitMQ%E5%AE%89%E8%A3%85/" title="RabbitMQ之RabbitMQ安装">RabbitMQ之RabbitMQ安装</a><time datetime="2021-03-05T10:50:35.000Z" title="发表于 2021-03-05 18:50:35">2021-03-05</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/03/05/RabbitMQ%E4%B9%8BMQ%E4%BB%8B%E7%BB%8D/" title="RabbitMQ之MQ介绍"><img src="https://saxon.oss-cn-shenzhen.aliyuncs.com/blog/e615ea24c3506e19a8d83d440b471dc7.jpeg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="RabbitMQ之MQ介绍"/></a><div class="content"><a class="title" href="/2021/03/05/RabbitMQ%E4%B9%8BMQ%E4%BB%8B%E7%BB%8D/" title="RabbitMQ之MQ介绍">RabbitMQ之MQ介绍</a><time datetime="2021-03-05T10:50:18.000Z" title="发表于 2021-03-05 18:50:18">2021-03-05</time></div></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2021 By Saxon</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="icp"><a><img class="icp-icon" src="/img/icp.png" alt="ICP"/><span>滇ICP备2020007353号-1</span></a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><div class="js-pjax"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div><script defer="defer" id="fluttering_ribbon" mobile="true" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/canvas-fluttering-ribbon.min.js"></script><script id="click-show-text" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/click-show-text.min.js" async="async" mobile="false"></script></div><script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"model":{"jsonPath":"/live2dw/assets/tororo.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":true},"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body></html>
